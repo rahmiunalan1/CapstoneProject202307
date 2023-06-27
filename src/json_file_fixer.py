@@ -72,9 +72,11 @@ def fix_credit_file(infile_json_name, outfile_json_name):
         t1 = d['YEAR'] + fix_month_day_length(d['MONTH']) + fix_month_day_length(d['DAY'])
         #print('t1:',t1)
         d['TIMEID'] = t1
-        del d['YEAR']
-        del d['MONTH']
-        del d['DAY']
+        # below code sholdn't be used since we are supposed to use year and month infomation
+        # that is the reason for comments
+        #del d['YEAR']
+        #del d['MONTH']
+        #del d['DAY']
 
         # fill the json file with the data
         json.dump(d, outfile_json, separators=(',',':'))

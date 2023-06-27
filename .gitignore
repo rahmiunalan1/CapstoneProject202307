@@ -2,5 +2,6 @@ __pycache__
 *.pyc
 *.ods
 *.pdf
-data_files
+data_files/*
+raw_data_files/*
 
