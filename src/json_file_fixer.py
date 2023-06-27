@@ -40,10 +40,10 @@ def fix_branch_file(infile_json_name, outfile_json_name):
 #file_json = file_dir + "analiz0.json"
 #fix_branch_file(file_json, file_dir + "analiz0_sonuc.json")
 
-infile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/raw_data_files"
-infile_name = "cdw_sapp_branch.json"
-outfile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/data_files"
-outfile_name = "cdw_sapp_branch.json"
+infile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/raw_data_files/"
+infile_name = infile_dir+"cdw_sapp_branch.json"
+outfile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/data_files/"
+outfile_name = outfile_dir+"cdw_sapp_branch.json"
 fix_branch_file(infile_name, outfile_name)
 
 def fix_credit_file(infile_json_name, outfile_json_name):
@@ -138,9 +138,9 @@ def fix_customer_file(infile_json_name, outfile_json_name):
 
 #fix_customer_file(file_dir+"analiz2.json",file_dir+"analiz2_sonuc.json")
 
-infile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/raw_data_files"
+infile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/raw_data_files/"
 infile_name = infile_dir+"cdw_sapp_customer.json"
-outfile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/data_files"
+outfile_dir = "C:/Users/rahmi/Documents/Perscholas_Project_Files/CapstoneProject/data_files/"
 outfile_name = outfile_dir+"cdw_sapp_customer.json"
 fix_customer_file(infile_name, outfile_name)
 
