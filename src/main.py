@@ -35,11 +35,11 @@ print(df_credit.select(df_credit.BRANCH_CODE, df_credit.TRANSACTION_VALUE)\
 
 #print("$$$$$$$$$$$$$$$$$$$$$$$$$")
 
-
+'''
 df_credit.filter(col("TRANSACTION_TYPE")=="Healthcare")\
     .groupBy(df_credit.BRANCH_CODE)\
     .agg({"TRANSACTION_VALUE":"sum"}).sort(df_credit.BRANCH_CODE.desc()).show()
-
+'''
 '''
 df_credit.filter(col("TRANSACTION_TYPE")=="Healthcare")\
     .groupBy(df_credit.BRANCH_CODE)\
@@ -51,7 +51,7 @@ df_credit.filter(col("TRANSACTION_TYPE")=="Healthcare")\
 
 df_customer = spark.read.json(data_files_folder + data_file_customer)
 #df_customer.printSchema()
-#df_customer.fil, ter(col("CUST_STATE")=="NJ").show(truncate=False)
+#df_customer.filter(col("CUST_STATE")=="NJ").show(truncate=False)
 #df_customer.filter(col("CUST_ZIP")=="48124").show(truncate=False)
 
 
@@ -59,7 +59,7 @@ df_loan_app = spark.read.json(data_files_folder + data_file_loan_app)
 #df_loan_app.printSchema()
 #
 #df_loan_app.filter(col("Income")=="high").filter(col("Dependents")=="3+").show(truncate=False)
-#print(df_loan_app.filter(col("Property_Area")=="Urban").count())
+print(df_loan_app.filter(col("Property_Area")=="Urban").count())
 #df_loan_app.filter(col("Property_Area")=="Rural").show(truncate=False)
 #
 
