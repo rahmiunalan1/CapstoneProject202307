@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, sum, avg, count, countDistinct
+from pyspark.sql.functions import col, sum, when, avg, count, countDistinct
 
 spark = SparkSession.builder.master("local[*]").appName("Capstone Project graphs").getOrCreate()
 
@@ -141,7 +141,12 @@ def visual_6(df_customer_app):
     '''Visual for state with high number of customer'''
     
     d1 = df_customer_app.select(df_customer_app.CUST_STATE).distinct().count()#show(truncate=False)
-    print(f"\n%%%%%%%%\nd1 is : {d1}\n %%%%%%\n")
+    print(f"\nTotal number of states in this file is : {d1}\n")
+
+    f = df_customer_app.groupBy("CUST_STATE").count()
+
+    f.show(40, truncate=False)
+
     return
 
 def visual_7():
@@ -269,8 +274,19 @@ def display_account_details(df_customer_app):
         print(f"There is no account with {ssn} number")
     return
 
-def modify_customer_details():
-    pass
+def modify_customer_details(df_customer_app):
+    ssn = input("Enter SSN number of customer to update information : ")
+    value_field = input("Enter the field name to be updated : ").upper()
+    new_value = input(f"Enter the new value for the {value_field} : ")
+
+    print(f"Original values : ")
+    df_customer_app.select(df_customer_app.columns).filter(col("SSN")==ssn).show(truncate=False)
+
+    df_customer_app.withColumn(value_field, col(new_value))
+
+    df_customer_app.filter(col("SSN")==ssn).show(truncate=False)
+
+    return
 
 def generate_monthly_bill(df_credit_app):
     print("To display monthly bill for a credit card number")
@@ -337,7 +353,7 @@ def page_zero():
             #ssn = input("Enter SNN number ")
             #functions[selection](ssn)
         elif selection == '5':
-            pass
+            modify_customer_details(df_customer_app)
         elif selection == '6':
             generate_monthly_bill(df_credit_app)
         elif selection == '7':
