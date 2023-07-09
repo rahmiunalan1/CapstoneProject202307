@@ -114,17 +114,32 @@ def visual_4(df_credit_app, df_branch_app):
     plt.bar(graph_for, r)
     plt.xlabel(graph_for)
     plt.ylabel("Transaction Value")
-    plt.title(f"Graph {plt.xlabel()} vs {plt.ylabel()}")
+    plt.title(f"Graph of {graph_for} vs number ")
     plt.show()
     return
 
-def visual_5(df_credit):
+def visual_5(df_credit_app):
     '''Find and plot which transaction type has a high rate of transactions'''
-    pass
+    '''"Bills, Education, Entertainment, Gas, Grocery, Healthcare, Test"'''
+    d1 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Bills").count()
+    d2 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Education").count()
+    d3 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Entertainment").count()
+    d4 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Gas").count()
+    d5 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Grocery").count()
+    d6 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Healthcare").count()
+    d7 = df_credit_app.filter(col("TRANSACTION_TYPE")=="Test").count()
+    y = np.array([d1,d2,d3,d4,d5,d6,d7])
+    x = np.array(["Bills", "Education", "Entertainment", "Gas", "Grocery", "Healthcare", "Test"])
+    plt.bar(x,y,color='green',width=0.6)
+    plt.xlabel("Transaction Type")
+    plt.ylabel("Number of Transactions")
+    plt.title("Transaction Rate Graph")
+    plt.show()
+    return
 
 def visual_6(df_customer_app):
     '''Visual for state with high number of customer'''
-    print("Merhaba")
+    
     d1 = df_customer_app.select(df_customer_app.CUST_STATE).distinct().count()#show(truncate=False)
     print(f"\n%%%%%%%%\nd1 is : {d1}\n %%%%%%\n")
     return
