@@ -97,12 +97,29 @@ def visual_3(df_credit_app):
     plt.show()
     return
 
-def visual_4(df_credit):
-    '''Visual for high rate of transactions'''
+def visual_4(df_credit_app, df_branch_app):
+    '''Visual for the branch which processed the highest total dollar value of healthcare transactions'''
     print("Work in progress")
+    print("Select one from the following to pkot highest dollar value graph")
+    print("Bills, Education, Entertainment, Gas, Grocery, Healthcare, Test")
+    graph_type_list = ['Bills', 'Education', 'Entertainment', 'Gas', 'Grocery', 'Healthcare', 'Test']
+    graph_for = input("From the list select the graph : ")
+    if graph_for not in graph_type_list:
+        print("Not a valid option")
+        return
+    t = df_credit_app.join(df_branch_app, df_credit_app.BRANCH_CODE == df_branch_app.BRANCH_CODE, "inner")
+    r = t.select(df_credit_app.BRANCH_CODE,t.BRANCH_STREET, t.BRANCH_CITY, t.BRANCH_STATE, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE)\
+        .filter(col("TRANSACTION_TYPE")==graph_for).agg(sum("TRANSACTION_VALUE")).collect()[0][0]
+    
+    plt.bar(graph_for, r)
+    plt.xlabel(graph_for)
+    plt.ylabel("Transaction Value")
+    plt.title(f"Graph {plt.xlabel()} vs {plt.ylabel()}")
+    plt.show()
     return
 
 def visual_5(df_credit):
+    '''Find and plot which transaction type has a high rate of transactions'''
     pass
 
 def visual_6(df_customer_app):
@@ -113,7 +130,9 @@ def visual_6(df_customer_app):
     return
 
 def visual_7():
-    '''Sum of all transactions for top 10 customers'''
+    '''Find and plot the sum of all transactions for the top  10 customers
+    and which customer has the highest transaction amount
+    Sum of all transactions for top 10 customers'''
     pass
 
 
@@ -125,28 +144,32 @@ def visual_7():
 def page_one():
     print(logo1_1)
     print("\t  You have following options for this page (x for exit): ")
-    print("\t  -) Graph of employment types           : 1")
-    print("\t  -) Graph of married unmarried approval : 2")
-    print("\t  -) Graph of highest transaction number : 3")
-    print("\t  -) Graph of highest transaction branch : 4")
-    print("\t  -) Graph of highest transaction type   : 5")
-    print("\t  -) Graph of highest number of customer : 6")
+    print("\t  -) Graph of approved apps for self employed  : 1")
+    print("\t  -) Graph of rejected married male applicatns : 2")
+    print("\t  -) Graph of top 3 months with largest trans  : 3")
+    print("\t  -) Graph of branch with highest transaction  : 4")
 
-    functions = {'1':visual_1, '2':visual_2, '3':visual_3, '4':visual_4, '5':visual_5, '6':visual_6}
+    print("\t  -) Graph of high rate of transactions        : 5")
+    print("\t  -) Graph of states with high number customer : 6")
+    print("\t  -) Graph of transactions for top 10 customer : 7")
+
+    functions = {'1':visual_1, '2':visual_2, '3':visual_3, '4':visual_4, '5':visual_5, '6':visual_6, '7': visual_7}
     cancel = 2
     while cancel > 0:
         selection = input("\nSelect a choice: ")
-        if selection not in "123456":
+        if selection not in "1234567":
             if selection =='x' or selection == 'X':
                 print('\n\n',logo_isim,'\n\n\n')
                 sys.exit()
             cancel -= 1
             print(f"You can try {cancel} more times")
-            selection = input("Please enter a valid value (1,2,3,4,5,6):")
+            selection = input("Please enter a valid value (1,2,3,4,5,6,7):")
         elif selection in '12':
             functions[selection](df_loan_app)
-        elif selection in '345':
+        elif selection in '35':
             functions[selection](df_credit_app)
+        elif selection in '4':
+            functions[selection](df_credit_app, df_branch_app)
         elif selection in '6':
             functions[selection](df_customer_app)
         else:
@@ -172,10 +195,10 @@ def page_zero_a(df_customer_app,df_credit_app):
     #         t.DAY, t.MONTH, t.YEAR, t.TRANSACTION_ID, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE)\
     #         .filter(col("CUST_ZIP")==zipcode).filter(col("MONTH")==month).filter(col("YEAR")==year).show(truncate=False)
     
-    result = t.select(t.FIRST_NAME, t.LAST_NAME, t.CUST_EMAIL, t.BRANCH_CODE,
-                  t.DAY, t.MONTH, t.YEAR, t.TRANSACTION_ID, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE)\
-          .filter(col("CUST_ZIP") == zipcode).filter(col("MONTH") == month).filter(col("YEAR") == year)\
-          .orderBy(col("DAY").desc())
+    result = t.select(t.FIRST_NAME, t.LAST_NAME, t.CUST_EMAIL, t.BRANCH_CODE,\
+             t.DAY, t.MONTH, t.YEAR, t.TRANSACTION_ID, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE)\
+             .filter(col("CUST_ZIP") == zipcode).filter(col("MONTH") == month).filter(col("YEAR") == year)\
+             .orderBy(col("DAY").desc())
 
     result.show(truncate=False)
     #df_customer.printSchema()
@@ -205,28 +228,62 @@ def page_zero_b(df_credit_app):
 
     return
 
-def page_zero_c():
-    run_c = True
+def page_zero_c(df_credit_app, df_branch_app):
     print("To display total number and total values of transactions")
-    state = input("Enter state abbreviation")
+    state = input("Enter state abbreviation : ")
+    print(f"You see values for state of {state}")
+    # t = df_credit_app.join(df_branch_app, df_credit_app.BRANCH_CODE == df_branch_app.BRANCH_CODE, "inner")
+    # r = t.select(t.BRANCH_CODE, t.TIMEID, t.TRANSACTION_ID, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE,\
+    #     t.BRANCH_CITY, t.BRANCH_STATE, t.BRANCH_PHONE).filter(col("BRANCH_STATE")==state)
+    t = df_credit_app.join(df_branch_app, df_credit_app.BRANCH_CODE == df_branch_app.BRANCH_CODE, "inner")
+    r = t.select(t.TIMEID, t.TRANSACTION_ID, t.TRANSACTION_TYPE, t.TRANSACTION_VALUE,\
+        t.BRANCH_CITY, t.BRANCH_STATE, t.BRANCH_PHONE).filter(col("BRANCH_STATE")==state)
+    r.show(truncate=False)
+    counted = r.count()
+    print(f"Total number of transaction in state of {state} is {counted}\n\n")
 
     return
 
-def display_account_details(ssn):
+def display_account_details(df_customer_app):
     ''' Give social security number to check the details
     use customer json file'''
+    ssn = input("Enter SSN number : ")
     try:
         df_customer_app.filter(col("SSN")==ssn).show(truncate=False)
     except:
         print(f"There is no account with {ssn} number")
     return
 
-def modify_account_details():
+def modify_customer_details():
     pass
 
-def monthly_bill(credit_card_no, month):
-    #df_customer_app.
-    pass
+def generate_monthly_bill(df_credit_app):
+    print("To display monthly bill for a credit card number")
+    cardno = input("Please enter credit card number : ")
+    month = input("Please enter the month : ")
+    year = input("Please enter the year : ")
+    t = df_credit_app
+    r = t.select(t.TRANSACTION_TYPE, t.TRANSACTION_VALUE, t.TIMEID).filter(col("CREDIT_CARD_NO")==cardno)\
+        .filter(col("MONTH")==month).filter(col("YEAR")==year)
+    r.show(truncate=False)
+    #print(t)
+    return
+
+def display_transactions_between_dates(df_credit_app):
+    print("To display transactions between two dates")
+    year = input("Please enter first year : ")
+    month = input("Please enter first month : ")
+    day = input("Please enter first day : ")
+    fix_month_day_length = lambda x : x if len(x)==2 else '0'+x
+    timeid1 = year + fix_month_day_length(month) + fix_month_day_length(day)
+    year = input("Please enter second year : ")
+    month = input("Please enter second month : ")
+    day = input("Please enter second day : ")
+    timeid2 = year + fix_month_day_length(month) + fix_month_day_length(day)
+    t = df_credit_app
+    r = t.select(t.TRANSACTION_TYPE, t.TRANSACTION_VALUE, t.TIMEID).filter(col("TIMEID")>timeid1).filter(col("TIMEID")<timeid2)
+    r.show(truncate=False)
+    return
 
 
 def page_zero():
@@ -236,7 +293,7 @@ def page_zero():
     print("\t  (x for exit; r for restart)")
     #print("\t -) Display Transaction Details : 1")
     #print("\t -) Display Customer Details    : 2")
-    functions = {'4': display_account_details}
+    #functions = {'4': display_account_details}
 
     while 1:
         print("\t -) Display transactions made by customers living in a zip code      : 1")
@@ -246,7 +303,7 @@ def page_zero():
         print("\t -) Display existing account details                                 : 4")
         print("\t -) Modify customer details                                          : 5")
         print("\t -) Generate bill for month                                          : 6")
-        print("\t -) Display transactions between dates: 7")
+        print("\t -) Display transactions between dates                               : 7")
         selection = input("\nSelect a choice: x to exit   ")
 
         if selection =='x' or selection == 'X':
@@ -259,24 +316,25 @@ def page_zero():
         elif selection == '2':
             page_zero_b(df_credit_app)
         elif selection == '3':
-            pass
+            page_zero_c(df_credit_app, df_branch_app)
         elif selection == '4':
-            ssn = input("Enter SNN number ")
-            functions[selection](ssn)
+            display_account_details(df_customer_app)
+            #ssn = input("Enter SNN number ")
+            #functions[selection](ssn)
         elif selection == '5':
             pass
         elif selection == '6':
-            pass
+            generate_monthly_bill(df_credit_app)
         elif selection == '7':
-            pass
+            display_transactions_between_dates(df_credit_app)
         else:
             print("invalid selection!")
 
     return 
 
 
-#page_one()
-page_zero()
+page_one()
+#page_zero()
 
 
 spark.stop() # below here is to keep the evolution of the functions
