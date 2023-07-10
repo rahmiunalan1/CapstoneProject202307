@@ -276,13 +276,13 @@ def display_account_details(df_customer_app):
 
 def modify_customer_details(df_customer_app):
     ssn = input("Enter SSN number of customer to update information : ")
-    value_field = input("Enter the field name to be updated : ").upper()
-    new_value = input(f"Enter the new value for the {value_field} : ")
-
+    field_to_update = input("Enter the field name to be updated : ").upper()
+    new_value = input(f"Enter the new value for the {field_to_update} : ")
+    valueWhenTrue = None
     print(f"Original values : ")
     df_customer_app.select(df_customer_app.columns).filter(col("SSN")==ssn).show(truncate=False)
 
-    df_customer_app.withColumn(value_field, col(new_value))
+    df_customer_app.withColumn(field_to_update, when(col(field_to_update)!=new_value,valueWhenTrue).otherwise(col(field_to_update)) )
 
     df_customer_app.filter(col("SSN")==ssn).show(truncate=False)
 
@@ -319,7 +319,7 @@ def display_transactions_between_dates(df_credit_app):
 
 def page_zero():
     print(logo1_1)
-    print("\n\t\t Main Menu\n\n")
+    #print("\n\t\t Main Menu\n\n")
     print("\t  You have following options for this page : ")
     print("\t  (x for exit; r for restart)")
     #print("\t -) Display Transaction Details : 1")
@@ -363,10 +363,24 @@ def page_zero():
 
     return 
 
+def run_project():
+    print("\n\t\t Main Menu\n")
+    print("\t Select x or X to exit ")
+    selection = input("\t Select 1 for visualizations, 2 for others : ")
+    while 1:
+        if selection =='x' or selection == 'X':
+            print('\n\n',logo_isim,'\n\n\n')
+            sys.exit()
+        if selection not in "12":
+            print("You shuld select one of 1,2,x")
+        if selection == '1':
+            page_one()
+        elif selection == '2':
+            page_zero()
+        else:
+            print("Hello")
 
-page_one()
-#page_zero()
-
+run_project()
 
 spark.stop() # below here is to keep the evolution of the functions
 
